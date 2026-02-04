@@ -1,0 +1,3624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>值班系统 - 信息化管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        
+        /* 主容器 */
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            border: 1px solid #ddd;
+            margin: 0;
+        }
+        
+        /* 顶部标题栏 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #2c3e50;
+            color: white;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .header-left h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .header-right {
+            font-size: 14px;
+        }
+        
+        /* 主体内容区 */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* 左侧菜单栏 */
+        .sidebar {
+            width: 180px;
+            background-color: #34495e;
+            color: white;
+            border-right: 1px solid #ddd;
+        }
+        
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #2c3e50;
+            transition: background-color 0.3s;
+        }
+        
+        .menu-item:hover {
+            background-color: #2c3e50;
+        }
+        
+        .menu-item.active {
+            background-color: #3498db;
+            border-left: 4px solid #2980b9;
+        }
+        
+
+        
+        /* 右侧内容区 */
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            overflow-y: auto;
+        }
+        
+        /* 内容区域标题 */
+        .content-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .content-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        /* 内容区域 */
+        .content-body {
+            min-height: 300px;
+        }
+        
+        /* 数据卡片样式 */
+        .card {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .card-content {
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            background-color: #f8f9fa;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-size: 13px;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f8f9fa;
+            color: #5a6268;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #495057;
+            text-align: left;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        /* 日历样式 */
+        .calendar-container {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .calendar-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .calendar-nav button {
+            padding: 6px 12px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.3s;
+        }
+        
+        .calendar-nav button:hover {
+            background-color: #e9ecef;
+        }
+        
+        .calendar-week {
+            display: grid;
+            grid-template-columns: 120px repeat(7, 1fr);
+            gap: 1px;
+            background-color: #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .time-slot-header {
+            background-color: #f8f9fa;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            color: #495057;
+            border-right: 1px solid #ddd;
+        }
+        
+        .calendar-day-header {
+            background-color: #f8f9fa;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            color: #495057;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 120px repeat(7, 1fr);
+            gap: 1px;
+            background-color: #ddd;
+        }
+        
+        .time-slot {
+            background-color: #f8f9fa;
+            padding: 8px;
+            text-align: center;
+            font-size: 13px;
+            color: #495057;
+            border-right: 1px solid #ddd;
+            position: relative;
+            cursor: pointer;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .time-slot:hover {
+            background-color: #e9ecef;
+        }
+        
+        .time-slot.editing {
+            background-color: #fff3cd;
+        }
+        
+        .time-slot input {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .time-slot .edit-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 10px;
+            color: #6c757d;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .time-slot .delete-btn {
+            position: absolute;
+            top: 2px;
+            right: 18px;
+            font-size: 10px;
+            color: #dc3545;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .time-slot:hover .edit-btn,
+        .time-slot:hover .delete-btn {
+            opacity: 1;
+        }
+        
+        .calendar-day {
+            background-color: white;
+            padding: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            min-height: 60px;
+        }
+        
+        .calendar-day:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .calendar-day.today {
+            background-color: #e3f2fd;
+        }
+        
+        .calendar-day-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .calendar-day.today .calendar-day-number {
+            color: #1976d2;
+        }
+        
+        .schedule-item {
+            background-color: #e3f2fd;
+            border-left: 3px solid #2196f3;
+            padding: 4px 6px;
+            margin-bottom: 4px;
+            border-radius: 2px;
+            font-size: 11px;
+            color: #1565c0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+        }
+        
+        .schedule-container .schedule-item {
+            margin-bottom: 0;
+        }
+        
+        .schedule-item:hover {
+            background-color: #bbdefb;
+        }
+        
+        .schedule-item.morning {
+            background-color: #fff3e0;
+            border-left-color: #ff9800;
+            color: #e65100;
+        }
+        
+        .schedule-item.morning:hover {
+            background-color: #ffe0b2;
+        }
+        
+        .schedule-item.afternoon {
+            background-color: #e8f5e9;
+            border-left-color: #4caf50;
+            color: #1b5e20;
+        }
+        
+        .schedule-item.afternoon:hover {
+            background-color: #c8e6c9;
+        }
+        
+        .schedule-item.evening {
+            background-color: #f3e5f5;
+            border-left-color: #9c27b0;
+            color: #4a148c;
+        }
+        
+        .schedule-item.evening:hover {
+            background-color: #e1bee7;
+        }
+        
+        .schedule-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 4px;
+        }
+        
+        .schedule-time {
+            font-size: 10px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .schedule-person {
+            font-size: 11px;
+        }
+        
+        .schedule-delete {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 12px;
+            color: #f44336;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            padding: 2px 4px;
+            border-radius: 2px;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 10;
+        }
+        
+        .schedule-item:hover .schedule-delete {
+            opacity: 1;
+        }
+        
+        .schedule-delete:hover {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .time-slot-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #ddd;
+        }
+        
+        .time-slot-actions button {
+            padding: 6px 12px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.3s;
+        }
+        
+        .time-slot-actions button:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 140px;
+            }
+            
+            .menu-item {
+                padding: 12px 15px;
+                font-size: 13px;
+            }
+            
+            .header-left h1 {
+                font-size: 16px;
+            }
+            
+            .calendar-week {
+                grid-template-columns: 80px repeat(7, 1fr);
+            }
+            
+            .calendar-grid {
+                grid-template-columns: 80px repeat(7, 1fr);
+            }
+            
+            .time-slot {
+                min-height: 40px;
+                font-size: 11px;
+            }
+            
+            .calendar-day {
+                min-height: 40px;
+                padding: 4px;
+            }
+            
+            .schedule-item {
+                font-size: 10px;
+                padding: 2px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部标题栏 -->
+        <div class="header">
+            <div class="header-left">
+                <h1>值班系统<br>信息化管理系统</h1>
+            </div>
+            <div class="header-right">
+                <span id="userAccount">账号</span>
+            </div>
+        </div>
+        
+        <!-- 主体内容区 -->
+        <div class="main-content">
+            <!-- 左侧菜单栏 -->
+            <div class="sidebar">
+                <div class="menu-item" data-target="data-统计">数据统计</div>
+                <div class="menu-item" data-target="work-值班管理">值班管理</div>
+                <div class="menu-item" data-target="work-工作交接">工作交接</div>
+                <div class="menu-item" data-target="work-待办事项">待办事项</div>
+                <div class="menu-item" data-target="workmanage-部门管理">部门管理</div>
+                <div class="menu-item" data-target="workmanage-学生管理">学生管理</div>
+            </div>
+            
+            <!-- 右侧内容区 -->
+            <div class="content">
+                <div class="content-header">
+                    <h2 id="content-title">值班安排</h2>
+                </div>
+                <div class="content-body">
+                    <!-- 值班管理内容 -->
+                    <div id="work-值班管理" class="content-section">
+                        <!-- 本周值班安排 -->
+                        <div class="card">
+                            <div class="card-title">本周值班安排</div>
+                            <div class="card-content">
+                                <div class="calendar-container">
+                                    <div class="calendar-header">
+                                        <div class="calendar-title" id="calendarTitle">2026年2月 第5周</div>
+                                        <div class="calendar-nav">
+                                        <button type="button" id="prevWeek">上一周</button>
+                                        <button type="button" id="todayBtn">本周</button>
+                                        <button type="button" id="nextWeek">下一周</button>
+                                        <button type="button" id="deleteWeekSchedule">删除本周</button>
+                                        <button type="button" id="importSchedule">导入值班表</button>
+                                        <button type="button" id="downloadTemplate">下载模板</button>
+                                        <select id="importSemester" style="margin-left: 10px; padding: 5px;">
+                                            <option value="1">1学期</option>
+                                            <option value="2">2学期</option>
+                                        </select>
+                                    </div>
+                                    <input type="file" id="excelFile" accept=".xlsx,.xls" style="display: none;">
+                                    <div id="scheduleDropZone" style="display: none; border: 2px dashed #007bff; padding: 20px; text-align: center; margin-top: 10px; background: #f0f8ff;">
+                                        <p>拖拽Excel文件到此处导入值班表</p>
+                                    </div>
+                                    </div>
+                                    <div class="calendar-week">
+                                        <div class="time-slot-header">时段</div>
+                                        <div class="calendar-day-header">周一</div>
+                                        <div class="calendar-day-header">周二</div>
+                                        <div class="calendar-day-header">周三</div>
+                                        <div class="calendar-day-header">周四</div>
+                                        <div class="calendar-day-header">周五</div>
+                                        <div class="calendar-day-header">周六</div>
+                                        <div class="calendar-day-header">周日</div>
+                                    </div>
+                                    <div class="calendar-grid" id="calendarGrid">
+                                        <!-- 日历网格将通过JavaScript动态生成 -->
+                                    </div>
+                                    <div class="time-slot-actions">
+                                        <button type="button" id="addTimeSlot">添加时段</button>
+                                        <button type="button" id="resetTimeSlots">重置时段</button>
+                                        <button type="button" id="settingsBtn">值班设置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 值班设置对话框 -->
+                        <div id="settingsDialog" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+                            <div style="background: white; padding: 30px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                                <h3 style="margin-top: 0; margin-bottom: 20px;">值班设置</h3>
+                                <div class="form-group">
+                                    <label>默认时段设置</label>
+                                    <textarea id="defaultTimeSlots" rows="4">08:10-09:35
+09:50-11:15
+14:30-15:55
+16:10-17:35</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>1学期开始日期（可选）</label>
+                                    <input type="date" id="semester1StartDate">
+                                </div>
+                                <div class="form-group">
+                                    <label>2学期开始日期（可选）</label>
+                                    <input type="date" id="semester2StartDate">
+                                </div>
+                                <div class="form-group">
+                                    <label>每学期周数</label>
+                                    <input type="number" id="semesterWeeks" value="20" min="1" max="30">
+                                </div>
+                                <div style="text-align: right; margin-top: 20px;">
+                                    <button type="button" id="closeSettingsDialog" style="padding: 8px 20px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">关闭</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 工作交接内容 -->
+                    <div id="work-工作交接" class="content-section" style="display: none;">
+                        <div style="display: flex; gap: 20px;">
+                            <div style="flex: 1;">
+                                <div class="card">
+                                    <div class="card-title">工作交接记录</div>
+                                    <div class="card-content">
+                                        <div style="margin-bottom: 15px;">
+                                            <button type="button" class="btn btn-secondary" id="addWorkRecordBtn" style="border: 1px solid #28a745; color: #28a745; background: transparent;"><i class="fas fa-plus"></i> 新增工作记录</button>
+                                        </div>
+                                        <table style="table-layout: fixed; width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 16%;">日期</th>
+                                                    <th style="width: 16%;">时段</th>
+                                                    <th style="width: 16%;">交接人</th>
+                                                    <th style="width: 16%;">交接内容</th>
+                                                    <th style="width: 16%;">状态</th>
+                                                    <th style="width: 20%;">操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="workRecordsTableBody">
+                                                <tr>
+                                                    <td colspan="6" style="text-align: center;">加载中...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 400px;">
+                                <div class="card">
+                                    <div class="card-title">工作记录详情预览</div>
+                                    <div class="card-content">
+                                        <div id="workRecordPreview" style="padding: 20px; border: 1px solid #ddd; border-radius: 4px; min-height: 200px;">
+                                            <p style="color: #999; text-align: center;">点击详情按钮查看工作记录详情</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 待办事项内容 -->
+                    <div id="work-待办事项" class="content-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-title">待办事项列表</div>
+                            <div class="card-content">
+                                <div style="margin-bottom: 15px;">
+                                    <button type="button" class="btn btn-secondary" id="addTodoBtn" style="border: 1px solid #28a745; color: #28a745; background: transparent;"><i class="fas fa-plus"></i> 新增待办事项</button>
+                                </div>
+                                <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                                    <select id="todoStatusFilter" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">全部状态</option>
+                                        <option value="pending">待处理</option>
+                                        <option value="in_progress">进行中</option>
+                                        <option value="completed">已完成</option>
+                                    </select>
+                                    <select id="todoPriorityFilter" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">全部优先级</option>
+                                        <option value="low">低</option>
+                                        <option value="medium">中</option>
+                                        <option value="high">高</option>
+                                    </select>
+                                    <button type="button" class="btn btn-secondary" id="refreshTodosBtn"><i class="fas fa-sync"></i> 刷新</button>
+                                </div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>任务名称</th>
+                                            <th>内容</th>
+                                            <th>截止日期</th>
+                                            <th>优先级</th>
+                                            <th>状态</th>
+                                            <th>负责人</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="todosTableBody">
+                                        <!-- 待办事项将通过JavaScript动态生成 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 数据统计内容 -->
+                    <div id="data-统计" class="content-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-title">值班统计</div>
+                            <div class="card-content">
+                                <p>总值班次数: 0</p>
+                                <p>本月值班次数: 0</p>
+                                <p>未完成工作: 0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 工作管理 - 部门管理内容 -->
+                    <div id="workmanage-部门管理" class="content-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-title">部门列表</div>
+                            <div class="card-content">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>部门名称</th>
+                                            <th>负责人</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>管理部门</td>
+                                            <td>管理员</td>
+                                            <td><button class="btn btn-secondary">编辑</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 工作管理 - 学生管理内容 -->
+                    <div id="workmanage-学生管理" class="content-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-title">学生列表</div>
+                            <div class="card-content">
+                                <div style="margin-bottom: 15px;">
+                                    <button type="button" class="btn btn-secondary" id="importMembersBtn" style="border: 1px solid #007bff; color: #007bff; background: transparent;"><i class="fas fa-file-import"></i> 导入学生</button>
+                                    <button type="button" class="btn btn-secondary" id="downloadStudentTemplate" style="border: 1px solid #28a745; color: #28a745; background: transparent;"><i class="fas fa-download"></i> 下载模板</button>
+                                    <button type="button" class="btn btn-secondary" id="addStudentBtn" style="border: 1px solid #28a745; color: #28a745; background: transparent;"><i class="fas fa-plus"></i> 新增学生</button>
+                                    <input type="file" id="membersExcelFile" accept=".xlsx,.xls" style="display: none;">
+                                    <div id="studentDropZone" style="display: none; border: 2px dashed #007bff; padding: 20px; text-align: center; margin-top: 10px; background: #f0f8ff;">
+                                        <p>拖拽Excel文件到此处导入学生</p>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                                    <input type="text" id="studentSearchInput" placeholder="输入学号或姓名搜索" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; flex: 1;">
+                                    <button type="button" class="btn btn-primary" id="searchStudentBtn">搜索</button>
+                                    <button type="button" class="btn btn-secondary" id="resetSearchBtn">重置</button>
+                                </div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>序号</th>
+                                            <th>学号</th>
+                                            <th>姓名</th>
+                                            <th>性别</th>
+                                            <th>班级</th>
+                                            <th>部门</th>
+                                            <th>状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="membersTableBody">
+                                        <!-- 学生列表将通过JavaScript动态生成 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const contentTitle = document.getElementById('content-title');
+            const userAccount = document.getElementById('userAccount');
+            
+            // 从本地存储获取用户信息
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                userAccount.textContent = 'admin';
+            }
+            
+            // 菜单点击事件
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    menuItems.forEach(menu => menu.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const target = this.getAttribute('data-target');
+                    const title = this.textContent;
+                    
+                    contentTitle.textContent = title;
+                    
+                    contentSections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    const targetSection = document.getElementById(target);
+                    if (targetSection) {
+                        targetSection.style.display = 'block';
+                        
+                        // 如果是值班管理页面，初始化日历
+                        if (target === 'work-值班管理') {
+                            initCalendar();
+                        }
+                        // 如果是学生管理页面，初始化学生管理功能
+                        else if (target === 'workmanage-学生管理') {
+                            initStudentManagement();
+                        }
+                        // 如果是工作交接页面，加载工作记录
+                        else if (target === 'work-工作交接') {
+                            loadWorkRecords();
+                        }
+                        // 如果是待办事项页面，加载待办事项
+                        else if (target === 'work-待办事项') {
+                            loadTodosList();
+                        }
+                    }
+                });
+            });
+            
+            // 默认激活数据统计菜单项
+            const data统计MenuItem = document.querySelector('[data-target="data-统计"]');
+            if (data统计MenuItem) {
+                data统计MenuItem.click();
+            } else {
+                // 如果数据统计菜单项不存在，激活第一个菜单项
+                const firstMenuItem = document.querySelector('.menu-item');
+                if (firstMenuItem) {
+                    firstMenuItem.click();
+                }
+            }
+            
+            // 检查登录状态
+            if (!token) {
+                window.location.href = '/login';
+            }
+        });
+        
+        // 日历功能
+        let currentWeekStart = new Date();
+        let scheduleData = [];
+        
+        window.timeSlots = ['08:10-09:35', '09:50-11:15', '14:30-15:55', '16:10-17:35'];
+        
+        function initCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const calendarTitle = document.getElementById('calendarTitle');
+            const prevWeekBtn = document.getElementById('prevWeek');
+            const nextWeekBtn = document.getElementById('nextWeek');
+            const todayBtn = document.getElementById('todayBtn');
+            const deleteWeekScheduleBtn = document.getElementById('deleteWeekSchedule');
+            const addTimeSlotBtn = document.getElementById('addTimeSlot');
+            const resetTimeSlotsBtn = document.getElementById('resetTimeSlots');
+            const semester1StartDateInput = document.getElementById('semester1StartDate');
+            const semester2StartDateInput = document.getElementById('semester2StartDate');
+            const semesterWeeksInput = document.getElementById('semesterWeeks');
+            const defaultTimeSlotsInput = document.getElementById('defaultTimeSlots');
+            
+            // 从localStorage加载设置
+            const savedSemester1StartDate = localStorage.getItem('semester1StartDate');
+            const savedSemester2StartDate = localStorage.getItem('semester2StartDate');
+            const savedSemesterWeeks = localStorage.getItem('semesterWeeks');
+            const savedDefaultTimeSlots = localStorage.getItem('defaultTimeSlots');
+            const savedTimeSlots = localStorage.getItem('timeSlots');
+            
+            if (savedSemester1StartDate) {
+                semester1StartDateInput.value = savedSemester1StartDate;
+            }
+            if (savedSemester2StartDate) {
+                semester2StartDateInput.value = savedSemester2StartDate;
+            }
+            if (savedSemesterWeeks) {
+                semesterWeeksInput.value = savedSemesterWeeks;
+            }
+            if (savedDefaultTimeSlots) {
+                defaultTimeSlotsInput.value = savedDefaultTimeSlots;
+            }
+            if (savedTimeSlots) {
+                try {
+                    window.timeSlots = JSON.parse(savedTimeSlots);
+                } catch (e) {
+                    console.error('解析保存的时间段失败:', e);
+                }
+            }
+            
+            // 计算本周的开始日期（周一）
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            currentWeekStart = monday;
+            
+            // 绑定按钮事件
+            prevWeekBtn.addEventListener('click', () => {
+                currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+                loadScheduleData();
+            });
+            
+            nextWeekBtn.addEventListener('click', () => {
+                currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+                loadScheduleData();
+            });
+            
+            todayBtn.addEventListener('click', () => {
+                currentWeekStart = new Date(today);
+                const dayOfWeek = currentWeekStart.getDay();
+                currentWeekStart.setDate(currentWeekStart.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+                loadScheduleData();
+            });
+            
+            deleteWeekScheduleBtn.addEventListener('click', () => {
+                if (!confirm('确定要删除本周的值班安排吗？此操作不可恢复。')) {
+                    return;
+                }
+                
+                const startDate = new Date(currentWeekStart);
+                const endDate = new Date(startDate);
+                endDate.setDate(startDate.getDate() + 6);
+                
+                const startDateStr = formatDate(startDate);
+                const endDateStr = formatDate(endDate);
+                
+                fetch(`/schedules/batch-delete?start_date=${startDateStr}&end_date=${endDateStr}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(`删除本周值班安排失败: ${err.detail || response.statusText}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('本周值班安排已删除');
+                    loadScheduleData();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('删除本周值班安排失败: ' + error.message);
+                });
+            });
+            
+            addTimeSlotBtn.addEventListener('click', () => {
+                window.timeSlots.push('00:00-00:00');
+                localStorage.setItem('timeSlots', JSON.stringify(window.timeSlots));
+                renderCalendar();
+            });
+            
+            resetTimeSlotsBtn.addEventListener('click', () => {
+                const defaultTimeSlotsInput = document.getElementById('defaultTimeSlots');
+                const defaultTimeSlotsText = defaultTimeSlotsInput.value;
+                const timeSlots = defaultTimeSlotsText.split('\n').map(slot => slot.trim()).filter(slot => slot);
+                window.timeSlots = timeSlots;
+                renderCalendar();
+            });
+            
+            // 导入值班表按钮事件
+            const importScheduleBtn = document.getElementById('importSchedule');
+            const excelFileInput = document.getElementById('excelFile');
+            const downloadTemplateBtn = document.getElementById('downloadTemplate');
+            const scheduleDropZone = document.getElementById('scheduleDropZone');
+            
+            importScheduleBtn.addEventListener('click', () => {
+                scheduleDropZone.style.display = 'block';
+            });
+            
+            if (scheduleDropZone) {
+                scheduleDropZone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    scheduleDropZone.style.background = '#e6f2ff';
+                });
+                
+                scheduleDropZone.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    scheduleDropZone.style.background = '#f0f8ff';
+                });
+                
+                scheduleDropZone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    scheduleDropZone.style.background = '#f0f8ff';
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        const file = files[0];
+                        if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                            handleExcelImport({ target: { files: [file] } });
+                            scheduleDropZone.style.display = 'none';
+                        } else {
+                            alert('请上传Excel文件');
+                        }
+                    }
+                });
+            }
+            
+            // 下载模板按钮事件
+            downloadTemplateBtn.addEventListener('click', downloadScheduleTemplate);
+            
+            // 学期设置变化事件
+            semester1StartDateInput.addEventListener('change', function() {
+                localStorage.setItem('semester1StartDate', semester1StartDateInput.value);
+                renderCalendar();
+            });
+            semester2StartDateInput.addEventListener('change', function() {
+                localStorage.setItem('semester2StartDate', semester2StartDateInput.value);
+                renderCalendar();
+            });
+            semesterWeeksInput.addEventListener('change', function() {
+                localStorage.setItem('semesterWeeks', semesterWeeksInput.value);
+                renderCalendar();
+            });
+            
+            // 默认时段设置变化事件
+            defaultTimeSlotsInput.addEventListener('change', function() {
+                localStorage.setItem('defaultTimeSlots', defaultTimeSlotsInput.value);
+            });
+            
+            // 值班设置按钮事件
+            const settingsBtn = document.getElementById('settingsBtn');
+            if (settingsBtn) {
+                settingsBtn.addEventListener('click', function() {
+                    const settingsDialog = document.getElementById('settingsDialog');
+                    settingsDialog.style.display = 'flex';
+                });
+            }
+            
+            // 关闭对话框按钮事件
+            const closeSettingsDialogBtn = document.getElementById('closeSettingsDialog');
+            if (closeSettingsDialogBtn) {
+                closeSettingsDialogBtn.addEventListener('click', function() {
+                    const settingsDialog = document.getElementById('settingsDialog');
+                    settingsDialog.style.display = 'none';
+                });
+            }
+            
+            // 从后端加载值班安排数据
+            loadScheduleData();
+        }
+        
+        function loadScheduleData() {
+            // 计算当前周的日期范围
+            const startDate = new Date(currentWeekStart);
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 6);
+            
+            // 格式化日期
+            const startDateStr = formatDate(startDate);
+            const endDateStr = formatDate(endDate);
+            
+            // 从后端API加载值班安排数据
+            fetch(`/schedules/?start_date=${startDateStr}&end_date=${endDateStr}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(`获取值班安排失败: ${err.detail || response.statusText}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(schedules => {
+                console.log('从后端获取的原始schedules数据:', schedules);
+                // 转换数据格式
+                scheduleData = schedules.map(schedule => ({
+                    id: schedule.id,
+                    date: schedule.date,
+                    time: schedule.time_slot,
+                    person: schedule.student_name || '未知'
+                }));
+                console.log('转换后的scheduleData:', scheduleData);
+                
+                // 渲染日历
+                renderCalendar();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // 使用空数据渲染日历
+                scheduleData = [];
+                renderCalendar();
+            });
+        }
+        
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const calendarTitle = document.getElementById('calendarTitle');
+            
+            // 更新标题
+            calendarTitle.textContent = getSemesterInfo(currentWeekStart);
+            
+            // 清空日历
+            calendarGrid.innerHTML = '';
+            
+            // 生成时段和日期网格
+            window.timeSlots.forEach((timeSlot, index) => {
+                // 创建时段列
+                const timeSlotElement = document.createElement('div');
+                timeSlotElement.className = 'time-slot';
+                timeSlotElement.dataset.index = index;
+                timeSlotElement.innerHTML = `
+                    <span class="time-slot-text">${timeSlot}</span>
+                    <span class="edit-btn">✏️</span>
+                    <span class="delete-btn" data-index="${index}">✕</span>
+                `;
+                calendarGrid.appendChild(timeSlotElement);
+                
+                // 绑定时段编辑事件
+                timeSlotElement.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('delete-btn')) {
+                        return;
+                    }
+                    startEditTimeSlot(index, timeSlotElement);
+                });
+                
+                // 绑定删除按钮事件
+                const deleteBtn = timeSlotElement.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    deleteTimeSlot(index);
+                });
+                
+                // 生成7天的日期单元格
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date(currentWeekStart);
+                    date.setDate(currentWeekStart.getDate() + i);
+                    
+                    const dateStr = formatDate(date);
+                    const isToday = isSameDay(date, new Date());
+                    
+                    // 创建日期单元格
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    if (isToday) {
+                        dayElement.classList.add('today');
+                    }
+                    
+                    // 添加日期数字
+                    const dayNumber = document.createElement('div');
+                    dayNumber.className = 'calendar-day-number';
+                    dayNumber.textContent = `${date.getMonth() + 1}/${date.getDate()}`;
+                    dayElement.appendChild(dayNumber);
+                    
+                    // 查找当天的值班安排
+                    const daySchedules = scheduleData.filter(s => s.date === dateStr && s.time === timeSlot);
+                    
+                    // 添加值班安排
+                    if (daySchedules.length > 0) {
+                        // 无论值班人员多少，都使用多栏显示
+                        const scheduleContainer = document.createElement('div');
+                        scheduleContainer.className = 'schedule-container';
+                        
+                        daySchedules.forEach(schedule => {
+                            const scheduleItem = document.createElement('div');
+                            scheduleItem.className = 'schedule-item';
+                            
+                            // 根据时间段设置样式
+                            const startTime = schedule.time.split('-')[0];
+                            const hour = parseInt(startTime.split(':')[0]);
+                            if (hour >= 6 && hour < 12) {
+                                scheduleItem.classList.add('morning');
+                            } else if (hour >= 12 && hour < 18) {
+                                scheduleItem.classList.add('afternoon');
+                            } else {
+                                scheduleItem.classList.add('evening');
+                            }
+                            
+                            const personDiv = document.createElement('div');
+                            personDiv.className = 'schedule-person';
+                            personDiv.textContent = schedule.person;
+                            
+                            const deleteBtn = document.createElement('div');
+                            deleteBtn.className = 'schedule-delete';
+                            deleteBtn.title = '删除';
+                            deleteBtn.textContent = '✕';
+                            deleteBtn.setAttribute('data-schedule-id', schedule.id);
+                            deleteBtn.setAttribute('data-is-delete-btn', 'true');
+                            deleteBtn.setAttribute('data-schedule-date', schedule.date);
+                            deleteBtn.setAttribute('data-schedule-time', schedule.time);
+                            deleteBtn.onmousedown = function(e) {
+                                console.log('删除按钮被点击（onmousedown），schedule.id:', schedule.id);
+                                e.stopPropagation();
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                deleteSchedule(schedule.id, e);
+                                return false;
+                            };
+                            deleteBtn.onclick = function(e) {
+                                console.log('删除按钮被点击（onclick），schedule.id:', schedule.id);
+                                e.stopPropagation();
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                deleteSchedule(schedule.id, e);
+                                return false;
+                            };
+                            console.log('创建删除按钮，schedule.id:', schedule.id, '完整的schedule对象:', schedule);
+                            
+                            scheduleItem.appendChild(personDiv);
+                            scheduleItem.appendChild(deleteBtn);
+                            
+                            scheduleContainer.appendChild(scheduleItem);
+                        });
+                        
+                        dayElement.appendChild(scheduleContainer);
+                    }
+                    
+                    // 添加点击事件，用于添加新的值班安排
+                    dayElement.addEventListener('click', function(event) {
+                        console.log('dayElement被点击，event.target:', event.target, 'event.target.className:', event.target.className);
+                        // 检查点击目标或其父元素是否是删除按钮
+                        const isDeleteBtn = event.target.getAttribute('data-is-delete-btn') === 'true' ||
+                                         event.target.closest('[data-is-delete-btn="true"]');
+                        if (isDeleteBtn) {
+                            console.log('点击的是删除按钮，不触发添加值班安排');
+                            return;
+                        }
+                        console.log('触发添加值班安排');
+                        addNewSchedule(dateStr, timeSlot);
+                    });
+                    
+                    calendarGrid.appendChild(dayElement);
+                }
+            });
+        }
+        
+        function startEditTimeSlot(index, element) {
+            const currentText = window.timeSlots[index];
+            element.classList.add('editing');
+            element.innerHTML = `
+                <input type="text" class="time-slot-input" value="${currentText}">
+            `;
+            
+            const input = element.querySelector('.time-slot-input');
+            input.focus();
+            input.select();
+            
+            // 绑定输入事件
+            input.addEventListener('blur', function() {
+                saveTimeSlot(index, element, input.value);
+            });
+            
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveTimeSlot(index, element, input.value);
+                } else if (e.key === 'Escape') {
+                    cancelEditTimeSlot(index, element);
+                }
+            });
+        }
+        
+        function saveTimeSlot(index, element, newValue) {
+            if (newValue.trim()) {
+                window.timeSlots[index] = newValue.trim();
+                localStorage.setItem('timeSlots', JSON.stringify(window.timeSlots));
+            }
+            element.classList.remove('editing');
+            renderCalendar();
+        }
+        
+        function cancelEditTimeSlot(index, element) {
+            element.classList.remove('editing');
+            renderCalendar();
+        }
+        
+        function deleteTimeSlot(index) {
+            if (!confirm('确定要删除该时段吗？此操作不可恢复。')) {
+                return;
+            }
+            
+            window.timeSlots.splice(index, 1);
+            localStorage.setItem('timeSlots', JSON.stringify(window.timeSlots));
+            renderCalendar();
+        }
+        
+        function getWeekNumber(date) {
+            const month = date.getMonth() + 1;
+            let startDateStr;
+            
+            // 根据月份判断使用哪个学期的开始日期
+            if (month >= 9 || month <= 1) {
+                // 1学期（9月-1月）
+                startDateStr = document.getElementById('semester1StartDate').value;
+            } else {
+                // 2学期（2月-8月）
+                startDateStr = document.getElementById('semester2StartDate').value;
+            }
+            
+            // 如果未设置学期开始日期，返回0
+            if (!startDateStr) {
+                return 0;
+            }
+            
+            const baseDate = new Date(startDateStr);
+            const diffTime = date.getTime() - baseDate.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const weekNumber = Math.floor(diffDays / 7);
+            return weekNumber < 0 ? 0 : weekNumber;
+        }
+        
+        function getSemesterInfo(date) {
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            let academicYear = '';
+            
+            // 计算学年：今年的9月初至次年的8月底为一个学年
+            if (month >= 9) {
+                academicYear = `${year}-${year + 1}`;
+            } else {
+                academicYear = `${year - 1}-${year}`;
+            }
+            
+            // 检查是否设置了学期开始日期
+            let startDateStr;
+            if (month >= 9 || month <= 1) {
+                startDateStr = document.getElementById('semester1StartDate').value;
+            } else {
+                startDateStr = document.getElementById('semester2StartDate').value;
+            }
+            
+            // 如果未设置学期开始日期，仅显示学年
+            if (!startDateStr) {
+                return academicYear;
+            }
+            
+            // 已设置学期开始日期，显示学期和周数
+            let semester = '';
+            if (month >= 9 || month <= 1) {
+                semester = '1学期';
+            } else {
+                semester = '2学期';
+            }
+            
+            // 使用周中的一天（周三）来计算周数，确保显示正确
+            const weekMiddleDate = new Date(date);
+            weekMiddleDate.setDate(date.getDate() + 2); // 周一+2=周三
+            let weekNumber = getWeekNumber(weekMiddleDate);
+            
+            // 获取设置的学期周数
+            const semesterWeeks = parseInt(document.getElementById('semesterWeeks').value) || 20;
+            
+            // 判断是否超过学期周数（第0周到第semesterWeeks-1周为正常教学周）
+            if (weekNumber > semesterWeeks) {
+                // 超过学期周数，显示寒假或暑假（不显示学期）
+                if (semester === '1学期') {
+                    return `${academicYear} 寒假`;
+                } else {
+                    return `${academicYear} 暑假`;
+                }
+            }
+            
+            // 如果周数为0，表示学期开始前，显示上学期的假期（不显示学期）
+            if (weekNumber === 0) {
+                if (semester === '1学期') {
+                    // 1学期开始前，显示上学期的暑假
+                    return `${academicYear} 暑假`;
+                } else {
+                    // 2学期开始前，显示上学期的寒假
+                    return `${academicYear} 寒假`;
+                }
+            }
+            
+            return `${academicYear}-${semester} 第${weekNumber}周`;
+        }
+        
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        function isSameDay(date1, date2) {
+            return date1.getFullYear() === date2.getFullYear() &&
+                   date1.getMonth() === date2.getMonth() &&
+                   date1.getDate() === date2.getDate();
+        }
+        
+        function addNewSchedule(date, timeSlot) {
+            // 创建搜索对话框
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            
+            const dialogContent = document.createElement('div');
+            dialogContent.style.cssText = `
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 400px;
+                max-width: 90%;
+            `;
+            
+            dialogContent.innerHTML = `
+                <h3 style="margin-bottom: 15px;">添加值班安排</h3>
+                <p style="margin-bottom: 10px;">${date} ${timeSlot}</p>
+                <div class="form-group">
+                    <label>选择值班人员</label>
+                    <input type="text" id="personSearch" placeholder="输入姓名搜索" style="width: 100%;">
+                    <div id="searchResults" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-top: none; margin-top: 5px; display: none;"></div>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmBtn" disabled>确认</button>
+                </div>
+            `;
+            
+            dialog.appendChild(dialogContent);
+            document.body.appendChild(dialog);
+            
+            const personSearch = dialogContent.querySelector('#personSearch');
+            const searchResults = dialogContent.querySelector('#searchResults');
+            const cancelBtn = dialogContent.querySelector('#cancelBtn');
+            const confirmBtn = dialogContent.querySelector('#confirmBtn');
+            
+            let selectedStudent = null;
+            let students = [];
+            
+            // 加载学生列表
+            fetch('/students/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('获取学生列表失败，状态码:', response.status);
+                    return response.json().then(err => {
+                        console.error('错误详情:', err);
+                        throw new Error(`获取学生列表失败: ${err.detail || response.statusText}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('获取到的学生列表:', data);
+                students = data.filter(student => !student.is_admin);
+                console.log('过滤后的学生列表:', students);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('获取学生列表失败，请刷新页面重试');
+            });
+            
+            // 搜索功能
+            personSearch.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                searchResults.innerHTML = '';
+                
+                if (query) {
+                    const filteredStudents = students.filter(s => s.name.toLowerCase().includes(query));
+                    
+                    if (filteredStudents.length > 0) {
+                        filteredStudents.forEach(student => {
+                            const resultItem = document.createElement('div');
+                            resultItem.style.cssText = `
+                                padding: 8px 12px;
+                                cursor: pointer;
+                                border-bottom: 1px solid #f0f0f0;
+                            `;
+                            resultItem.textContent = student.name;
+                            resultItem.addEventListener('click', function() {
+                                selectedStudent = student;
+                                personSearch.value = student.name;
+                                searchResults.style.display = 'none';
+                                confirmBtn.disabled = false;
+                            });
+                            searchResults.appendChild(resultItem);
+                        });
+                        searchResults.style.display = 'block';
+                    } else {
+                        searchResults.style.display = 'none';
+                    }
+                } else {
+                    searchResults.style.display = 'none';
+                }
+            });
+            
+            // 点击外部关闭搜索结果
+            document.addEventListener('click', function(e) {
+                if (!searchResults.contains(e.target) && e.target !== personSearch) {
+                    searchResults.style.display = 'none';
+                }
+            });
+            
+            // 取消按钮
+            cancelBtn.addEventListener('click', function() {
+                document.body.removeChild(dialog);
+            });
+            
+            // 确认按钮
+            confirmBtn.addEventListener('click', function() {
+                if (selectedStudent) {
+                    // 保存到后端数据库
+                    fetch('/schedules/', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            date: date,
+                            student_id: selectedStudent.id,
+                            time_slot: timeSlot
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('保存值班安排失败');
+                        }
+                        return response.json();
+                    })
+                    .then(newSchedule => {
+                        console.log('新创建的值班安排:', newSchedule);
+                        // 添加到本地数据
+                        scheduleData.push({
+                            id: newSchedule.id,
+                            date: date,
+                            time: timeSlot,
+                            person: selectedStudent.name
+                        });
+                        
+                        // 重新渲染日历
+                        renderCalendar();
+                        document.body.removeChild(dialog);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            });
+        }
+        
+        function handleExcelImport(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                
+                // 假设第一个工作表是值班表
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                
+                // 转换为JSON格式
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                
+                // 解析数据并添加到scheduleData
+                const importedSchedules = [];
+                
+                // 获取周次
+                let weekNumber = 1;
+                jsonData.forEach(row => {
+                    const weekInfo = row.周次;
+                    if (weekInfo && weekInfo.toString().trim() && weekInfo.toString().includes('周')) {
+                        const parsedWeek = parseInt(weekInfo.toString().replace(/[^0-9]/g, ''));
+                        if (!isNaN(parsedWeek) && parsedWeek >= 1) {
+                            weekNumber = parsedWeek;
+                        }
+                    }
+                    
+                    const timeSlot = row.时段;
+                    if (!timeSlot) return;
+                    
+                    // 遍历周一到周日
+                    const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                    days.forEach(day => {
+                        const person = row[day];
+                        if (person && person.toString().trim()) {
+                            // 处理多人值班（逗号分隔）
+                            const persons = person.toString().split(',').map(p => p.trim()).filter(p => p);
+                            
+                            // 为每个人创建一个值班记录
+                            persons.forEach(p => {
+                                importedSchedules.push({
+                                    weekNumber: weekNumber,
+                                    day: day,
+                                    time: timeSlot,
+                                    person: p
+                                });
+                            });
+                        }
+                    });
+                });
+                
+                if (importedSchedules.length > 0) {
+                    // 首先获取学生列表
+                    fetch('/students/', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('获取学生列表失败');
+                        }
+                        return response.json();
+                    })
+                    .then(students => {
+                        // 过滤掉管理员用户
+                        const filteredStudents = students.filter(student => !student.is_admin);
+                        
+                        // 获取选择的学期开始日期
+                        const selectedSemester = document.getElementById('importSemester').value;
+                        let semesterStartDateStr;
+                        if (selectedSemester === '1') {
+                            semesterStartDateStr = document.getElementById('semester1StartDate').value;
+                        } else {
+                            semesterStartDateStr = document.getElementById('semester2StartDate').value;
+                        }
+                        
+                        // 批量保存到后端数据库
+                        const savePromises = importedSchedules.map(schedule => {
+                            const student = filteredStudents.find(s => s.name === schedule.person);
+                            if (!student) {
+                                console.warn(`未找到学生: ${schedule.person}`);
+                                return Promise.resolve();
+                            }
+                            
+                            // 根据周次计算该周的起始日期
+                            let weekStart;
+                            if (semesterStartDateStr) {
+                                weekStart = new Date(semesterStartDateStr);
+                                weekStart.setDate(weekStart.getDate() + schedule.weekNumber * 7);
+                                console.log(`周次: ${schedule.weekNumber}, 学期开始: ${semesterStartDateStr}, 计算的周起始日期: ${formatDate(weekStart)}`);
+                            } else {
+                                // 如果未设置学期开始日期，使用当前显示的周
+                                weekStart = new Date(currentWeekStart);
+                                console.log(`未设置学期开始日期，使用当前周: ${formatDate(weekStart)}`);
+                            }
+                            
+                            // 计算具体日期
+                            const dayIndex = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'].indexOf(schedule.day);
+                            const date = new Date(weekStart);
+                            date.setDate(date.getDate() + dayIndex);
+                            
+                            console.log(`导入值班: ${schedule.person}, 周次: ${schedule.weekNumber}, 星期: ${schedule.day}, 日期: ${formatDate(date)}, 时段: ${schedule.time}`);
+                            
+                            return fetch('/schedules/', {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    date: formatDate(date),
+                                    student_id: student.id,
+                                    time_slot: schedule.time
+                                })
+                            });
+                        });
+                        
+                        return Promise.all(savePromises);
+                    })
+                    .then(responses => {
+                        const successfulImports = responses.filter(r => r && r.ok).length;
+                        const failedImports = responses.filter(r => !r || !r.ok).length;
+                        
+                        if (successfulImports > 0) {
+                            alert(`成功导入 ${successfulImports} 条值班安排${failedImports > 0 ? `，失败 ${failedImports} 条` : ''}`);
+                        } else {
+                            alert('导入失败，请检查Excel格式和人员信息');
+                        }
+                        
+                        // 重新加载数据
+                        loadScheduleData();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('导入失败: ' + error.message);
+                    });
+                } else {
+                    alert('未找到有效的值班安排数据');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function formatDateString(date) {
+            // 格式化日期为YYYY-MM-DD格式
+            if (typeof date === 'string') {
+                // 处理不同格式的日期字符串
+                const cleaned = date.replace(/[^\d-]/g, '');
+                if (cleaned.length === 8) {
+                    // 处理YYYYMMDD格式
+                    return `${cleaned.substring(0, 4)}-${cleaned.substring(4, 6)}-${cleaned.substring(6, 8)}`;
+                }
+            } else if (date instanceof Date) {
+                // 处理Date对象
+                return formatDate(date);
+            }
+            return date;
+        }
+        
+        function downloadScheduleTemplate() {
+            // 创建模板数据，符合图片样式的表格
+            const templateData = [
+                { 周次: '第1周', 时段: '08:10-09:35', 周一: '张三', 周二: '', 周三: '李四,王五', 周四: '', 周五: '', 周六: '', 周日: '' },
+                { 周次: '', 时段: '09:50-11:15', 周一: '', 周二: '赵六', 周三: '', 周四: '孙七,周八', 周五: '', 周六: '', 周日: '' },
+                { 周次: '', 时段: '14:30-15:55', 周一: '', 周二: '', 周三: '', 周四: '', 周五: '吴九', 周六: '', 周日: '' },
+                { 周次: '', 时段: '16:10-17:35', 周一: '', 周二: '', 周三: '', 周四: '', 周五: '', 周六: '郑十,王十一', 周日: '' }
+            ];
+            
+            // 创建工作表
+            const worksheet = XLSX.utils.json_to_sheet(templateData, {
+                header: ['周次', '时段', '周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                skipHeader: false
+            });
+            
+            // 创建工作簿
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '值班表模板');
+            
+            // 添加说明工作表
+            const instructionData = [
+                { 说明: '值班表填写说明' },
+                { 说明: '' },
+                { 说明: '1. 单人值班：直接填写姓名，如：张三' },
+                { 说明: '2. 多人值班：使用逗号分隔，如：张三,李四' },
+                { 说明: '3. 周次：只需在第一行填写，如：第1周、第2周' },
+                { 说明: '4. 时段：已预设四个标准时段，无需修改' },
+                { 说明: '5. 填写完成后保存文件，然后导入系统' },
+                { 说明: '' },
+                { 说明: '示例：' },
+                { 说明: '- 单人：张三' },
+                { 说明: '- 多人：张三,李四,王五' }
+            ];
+            
+            const instructionSheet = XLSX.utils.json_to_sheet(instructionData, {
+                header: ['说明'],
+                skipHeader: false
+            });
+            
+            // 设置说明工作表列宽
+            const instructionCols = [
+                { wch: 80 }
+            ];
+            instructionSheet['!cols'] = instructionCols;
+            
+            XLSX.utils.book_append_sheet(workbook, instructionSheet, '填写说明');
+            
+            // 设置值班表模板列宽
+            const wscols = [
+                { wch: 10 }, // 周次列宽
+                { wch: 15 }, // 时段列宽
+                { wch: 12 }, // 周一列宽
+                { wch: 12 }, // 周二列宽
+                { wch: 12 }, // 周三列宽
+                { wch: 12 }, // 周四列宽
+                { wch: 12 }, // 周五列宽
+                { wch: 12 }, // 周六列宽
+                { wch: 12 }  // 周日列宽
+            ];
+            worksheet['!cols'] = wscols;
+            
+            // 下载文件
+            XLSX.writeFile(workbook, '值班表模板.xlsx');
+        }
+        
+        // 学生管理功能
+        function initStudentManagement() {
+            const importMembersBtn = document.getElementById('importMembersBtn');
+            const membersExcelFile = document.getElementById('membersExcelFile');
+            const membersTableBody = document.getElementById('membersTableBody');
+            const downloadStudentTemplateBtn = document.getElementById('downloadStudentTemplate');
+            const addStudentBtn = document.getElementById('addStudentBtn');
+            const studentSearchInput = document.getElementById('studentSearchInput');
+            const searchStudentBtn = document.getElementById('searchStudentBtn');
+            const resetSearchBtn = document.getElementById('resetSearchBtn');
+            const studentDropZone = document.getElementById('studentDropZone');
+            
+            if (importMembersBtn) {
+                importMembersBtn.addEventListener('click', function() {
+                    studentDropZone.style.display = 'block';
+                });
+            }
+            
+            if (studentDropZone) {
+                studentDropZone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    studentDropZone.style.background = '#e6f2ff';
+                });
+                
+                studentDropZone.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    studentDropZone.style.background = '#f0f8ff';
+                });
+                
+                studentDropZone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    studentDropZone.style.background = '#f0f8ff';
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        const file = files[0];
+                        if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                            handleStudentsImport({ target: { files: [file] } });
+                            studentDropZone.style.display = 'none';
+                        } else {
+                            alert('请上传Excel文件');
+                        }
+                    }
+                });
+            }
+            
+            if (addStudentBtn) {
+                addStudentBtn.addEventListener('click', function() {
+                    showAddStudentDialog();
+                });
+            }
+            
+            if (searchStudentBtn) {
+                searchStudentBtn.addEventListener('click', function() {
+                    searchStudents();
+                });
+            }
+            
+            if (resetSearchBtn) {
+                resetSearchBtn.addEventListener('click', function() {
+                    studentSearchInput.value = '';
+                    loadStudentsList();
+                });
+            }
+            
+            if (membersExcelFile) {
+                membersExcelFile.addEventListener('change', handleStudentsImport);
+            }
+            
+            if (downloadStudentTemplateBtn) {
+                downloadStudentTemplateBtn.addEventListener('click', downloadStudentTemplate);
+            }
+            
+            // 加载学生列表
+            loadStudentsList();
+        }
+        
+        function loadStudentsList() {
+            const membersTableBody = document.getElementById('membersTableBody');
+            if (!membersTableBody) return;
+            
+            fetch('/students/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(`获取学生列表失败: ${err.detail || response.statusText}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(students => {
+                membersTableBody.innerHTML = '';
+                if (students.length === 0) {
+                    membersTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">暂无学生数据</td></tr>';
+                    return;
+                }
+                // 过滤掉管理员用户
+                const filteredStudents = students.filter(student => !student.is_admin);
+                if (filteredStudents.length === 0) {
+                    membersTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">暂无学生数据</td></tr>';
+                    return;
+                }
+                filteredStudents.forEach((student, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${student.username}</td>
+                        <td>${student.name}</td>
+                        <td>${student.gender || '未设置'}</td>
+                        <td>${student.class_name || student.class || student.班级 || '未设置'}</td>
+                        <td>${student.department || '未设置'}</td>
+                        <td>${student.is_password_set ? '<span style="color: green;">正常</span>' : '<span style="color: orange;">未激活</span>'}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editStudent(${student.id})" title="编辑信息"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-secondary" onclick="viewStudentDetail(${student.id})" title="查看详情"><i class="fas fa-info-circle"></i></button>
+                            <button class="btn btn-secondary" onclick="resetStudentPassword(${student.id})" title="重置密码"><i class="fas fa-key"></i></button>
+                            <button class="btn btn-secondary" onclick="deleteStudent(${student.id})" title="删除" style="color: red;"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    membersTableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('获取学生列表失败: ' + error.message);
+            });
+        }
+        
+        function handleStudentsImport(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                
+                // 假设第一个工作表是学生数据
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                
+                // 转换为JSON格式
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                
+                // 解析数据并添加到数据库
+                const importedStudents = [];
+                jsonData.forEach(row => {
+                    // 假设Excel表格有以下列：学号（账号）、姓名、性别、班级、部门
+                    const username = row.学号 || row.username || row.账号;
+                    const name = row.姓名 || row.name;
+                    const gender = row.性别 || row.gender || '未设置';
+                    const classInfo = row.班级 || row.class || '未设置';
+                    const department = row.部门 || row.department || '未设置';
+                    
+                    if (name && username) {
+                        importedStudents.push({
+                            name: name.toString().trim(),
+                            username: username.toString().trim(),
+                            gender: gender.toString().trim(),
+                            department: department.toString().trim(),
+                            class_name: classInfo.toString().trim(),
+                            password: username.toString().trim() + '@zbxt' // 默认密码格式：学号@zbxt
+                        });
+                    }
+                });
+                
+                if (importedStudents.length > 0) {
+                    // 批量保存到后端数据库
+                    const savePromises = importedStudents.map(student => {
+                        return fetch('/students/', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(student)
+                        }).then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => {
+                                    throw new Error(`导入学生 ${student.name} 失败: ${err.detail || response.statusText}`);
+                                });
+                            }
+                            return response.json();
+                        });
+                    });
+                    
+                    Promise.all(savePromises)
+                    .then(results => {
+                        const successfulImports = results.length;
+                        alert(`成功导入 ${successfulImports} 名学生`);
+                        
+                        // 重新加载学生列表
+                        loadStudentsList();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('导入学生失败: ' + error.message);
+                    });
+                } else {
+                    alert('未找到有效的学生数据');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function downloadStudentTemplate() {
+            // 创建模板数据
+            const templateData = [
+                { 学号: '2023001', 姓名: '张三', 性别: '男', 班级: '计算机1班' },
+                { 学号: '2023002', 姓名: '李四', 性别: '女', 班级: '计算机2班' },
+                { 学号: '2023003', 姓名: '王五', 性别: '男', 班级: '软件工程1班' }
+            ];
+            
+            // 创建工作表
+            const worksheet = XLSX.utils.json_to_sheet(templateData, {
+                header: ['学号', '姓名', '性别', '班级'],
+                skipHeader: false
+            });
+            
+            // 创建工作簿
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '学生导入模板');
+            
+            // 设置列宽
+            const wscols = [
+                { wch: 12 }, // 学号列宽
+                { wch: 10 }, // 姓名列宽
+                { wch: 8 },  // 性别列宽
+                { wch: 15 }  // 班级列宽
+            ];
+            worksheet['!cols'] = wscols;
+            
+            // 下载文件
+            XLSX.writeFile(workbook, '学生导入模板.xlsx');
+        }
+        
+        function editStudent(studentId) {
+            console.log('编辑学生信息功能开发中，学生ID: ' + studentId);
+            
+            fetch(`/students/${studentId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(student => {
+                showEditStudentDialog(student);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+        function showEditStudentDialog(student) {
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            
+            const dialogContent = document.createElement('div');
+            dialogContent.style.cssText = `
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 400px;
+                max-width: 90%;
+            `;
+            
+            dialogContent.innerHTML = `
+                <h3 style="margin-bottom: 15px;">编辑学生信息</h3>
+                <div class="form-group" style="text-align: left;">
+                    <label style="text-align: left;">学号</label>
+                    <input type="text" id="editStudentUsername" value="${student.username}" disabled style="width: 100%; background-color: #f5f5f5;">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label style="text-align: left;">姓名</label>
+                    <input type="text" id="editStudentName" value="${student.name}" style="width: 100%;">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label style="text-align: left;">性别</label>
+                    <select id="editStudentGender" style="width: 100%;">
+                        <option value="男" ${student.gender === '男' ? 'selected' : ''}>男</option>
+                        <option value="女" ${student.gender === '女' ? 'selected' : ''}>女</option>
+                    </select>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label style="text-align: left;">班级</label>
+                    <input type="text" id="editStudentClass" value="${student.class_name || student.class || student.班级 || ''}" style="width: 100%;">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label style="text-align: left;">部门</label>
+                    <input type="text" id="editStudentDepartment" value="${student.department || ''}" style="width: 100%;">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label style="text-align: left;">状态</label>
+                    <select id="editStudentStatus" style="width: 100%;">
+                        <option value="active" ${student.is_password_set ? 'selected' : ''}>正常</option>
+                        <option value="inactive" ${!student.is_password_set ? 'selected' : ''}>未激活</option>
+                    </select>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label style="text-align: left;">管理员权限</label>
+                    <select id="editStudentIsAdmin" style="width: 100%;">
+                        <option value="false" ${!student.is_admin ? 'selected' : ''}>否</option>
+                        <option value="true" ${student.is_admin ? 'selected' : ''}>是</option>
+                    </select>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" id="cancelEditStudent">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmEditStudent">确认</button>
+                </div>
+            `;
+            
+            dialog.appendChild(dialogContent);
+            document.body.appendChild(dialog);
+            
+            const cancelBtn = dialogContent.querySelector('#cancelEditStudent');
+            const confirmBtn = dialogContent.querySelector('#confirmEditStudent');
+            
+            cancelBtn.addEventListener('click', function() {
+                document.body.removeChild(dialog);
+            });
+            
+            confirmBtn.addEventListener('click', function() {
+                const name = document.getElementById('editStudentName').value.trim();
+                const gender = document.getElementById('editStudentGender').value;
+                const className = document.getElementById('editStudentClass').value.trim();
+                const department = document.getElementById('editStudentDepartment').value.trim();
+                const status = document.getElementById('editStudentStatus').value;
+                const isAdmin = document.getElementById('editStudentIsAdmin').value === 'true';
+                
+                if (!name) {
+                    console.log('姓名不能为空');
+                    return;
+                }
+                
+                fetch(`/students/${student.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        gender: gender,
+                        class_name: className,
+                        department: department,
+                        is_password_set: status === 'active',
+                        is_admin: isAdmin
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('更新学生信息失败');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('更新学生信息成功');
+                    document.body.removeChild(dialog);
+                    loadStudentsList();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        }
+        
+        function viewStudentDetail(studentId) {
+            console.log('查看学生详情功能开发中，学生ID: ' + studentId);
+        }
+        
+        function resetStudentPassword(studentId) {
+            fetch(`/students/${studentId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(student => {
+                const newPassword = `${student.username}@zbxt`;
+                fetch(`/students/${studentId}/reset-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ new_password: newPassword })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('重置密码失败');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('密码重置成功，新密码:', newPassword);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+        function deleteStudent(studentId) {
+            if (!confirm('确定要删除该学生吗？此操作不可恢复。')) {
+                return;
+            }
+            
+            fetch(`/students/${studentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.detail || '删除学生失败');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('删除学生成功');
+                loadStudentsList();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('删除学生失败: ' + error.message);
+            });
+        }
+        
+        function showAddStudentDialog() {
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            
+            const dialogContent = document.createElement('div');
+            dialogContent.style.cssText = `
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 400px;
+                max-width: 90%;
+            `;
+            
+            dialogContent.innerHTML = `
+                <h3 style="margin-bottom: 15px;">新增学生</h3>
+                <div class="form-group">
+                    <label>学号</label>
+                    <input type="text" id="newStudentUsername" placeholder="请输入学号" style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label>姓名</label>
+                    <input type="text" id="newStudentName" placeholder="请输入姓名" style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label>性别</label>
+                    <select id="newStudentGender" style="width: 100%;">
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>班级</label>
+                    <input type="text" id="newStudentClass" placeholder="请输入班级" style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label>部门</label>
+                    <input type="text" id="newStudentDepartment" placeholder="请输入部门" style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label>状态</label>
+                    <select id="newStudentIsAdmin" style="width: 100%;">
+                        <option value="false">正常</option>
+                        <option value="true">管理员</option>
+                    </select>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" id="cancelAddStudent">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmAddStudent">确认</button>
+                </div>
+            `;
+            
+            dialog.appendChild(dialogContent);
+            document.body.appendChild(dialog);
+            
+            const cancelBtn = dialogContent.querySelector('#cancelAddStudent');
+            const confirmBtn = dialogContent.querySelector('#confirmAddStudent');
+            
+            cancelBtn.addEventListener('click', function() {
+                document.body.removeChild(dialog);
+            });
+            
+            confirmBtn.addEventListener('click', function() {
+                const username = document.getElementById('newStudentUsername').value.trim();
+                const name = document.getElementById('newStudentName').value.trim();
+                const gender = document.getElementById('newStudentGender').value;
+                const className = document.getElementById('newStudentClass').value.trim();
+                const department = document.getElementById('newStudentDepartment').value.trim();
+                const isAdmin = document.getElementById('newStudentIsAdmin').value === 'true';
+                
+                if (!username || !name) {
+                    console.log('学号和姓名不能为空');
+                    return;
+                }
+                
+                fetch('/students/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        name: name,
+                        gender: gender,
+                        class_name: className,
+                        department: department,
+                        is_admin: isAdmin,
+                        password: `${username}@zbxt`
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('新增学生失败');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('新增学生成功');
+                    document.body.removeChild(dialog);
+                    loadStudentsList();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        }
+        
+        function searchStudents() {
+            const query = document.getElementById('studentSearchInput').value.trim();
+            if (!query) {
+                loadStudentsList();
+                return;
+            }
+            
+            fetch(`/students/?search=${encodeURIComponent(query)}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(`获取学生列表失败: ${err.detail || response.statusText}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(students => {
+                const membersTableBody = document.getElementById('membersTableBody');
+                membersTableBody.innerHTML = '';
+                
+                const filteredStudents = students.filter(student => !student.is_admin);
+                if (filteredStudents.length === 0) {
+                    membersTableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">未找到匹配的学生</td></tr>';
+                    return;
+                }
+                
+                filteredStudents.forEach((student, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${student.username}</td>
+                        <td>${student.name}</td>
+                        <td>${student.gender || '未设置'}</td>
+                        <td>${student.class_name || student.class || student.班级 || '未设置'}</td>
+                        <td>${student.department || '未设置'}</td>
+                        <td>${student.is_admin ? '<span style="color: red;">管理员</span>' : (student.is_password_set ? '<span style="color: green;">正常</span>' : '<span style="color: orange;">未激活</span>')}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editStudent(${student.id})" title="编辑信息"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-secondary" onclick="viewStudentDetail(${student.id})" title="查看详情"><i class="fas fa-info-circle"></i></button>
+                            <button class="btn btn-secondary" onclick="resetStudentPassword(${student.id})" title="重置密码"><i class="fas fa-key"></i></button>
+                        </td>
+                    `;
+                    membersTableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+        function deleteSchedule(scheduleId, event) {
+            event.stopPropagation();
+            event.preventDefault();
+            
+            console.log('删除值班安排，ID:', scheduleId);
+            
+            // 如果没有scheduleId，通过日期、时间和人员姓名来查找并删除
+            if (!scheduleId) {
+                console.log('scheduleId为空，尝试通过其他方式删除');
+                const deleteBtn = event.target;
+                const date = deleteBtn.getAttribute('data-schedule-date');
+                const time = deleteBtn.getAttribute('data-schedule-time');
+                const person = deleteBtn.closest('.schedule-item').querySelector('.schedule-person').textContent;
+                
+                console.log('日期:', date, '时间:', time, '人员:', person);
+                
+                // 从后端获取所有值班安排
+                fetch('/schedules/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(allSchedules => {
+                    console.log('所有值班安排:', allSchedules);
+                    // 找到匹配的值班安排
+                    const targetSchedule = allSchedules.find(s => 
+                        s.date === date && 
+                        s.time_slot === time && 
+                        s.student_name === person
+                    );
+                    if (targetSchedule) {
+                        console.log('找到匹配的值班安排:', targetSchedule);
+                        deleteSchedule(targetSchedule.id, event);
+                    } else {
+                        console.log('未找到匹配的值班安排');
+                        loadScheduleData();
+                    }
+                })
+                .catch(error => {
+                    console.error('获取值班安排失败:', error);
+                    loadScheduleData();
+                });
+                return;
+            }
+            
+            fetch(`/schedules/${scheduleId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('删除值班安排失败');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('值班安排删除成功，重新加载数据');
+                loadScheduleData();
+            })
+            .catch(error => {
+                console.error('删除失败:', error);
+            });
+        }
+        
+        // 待办事项相关功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 新增待办事项按钮点击事件
+            const addTodoBtn = document.getElementById('addTodoBtn');
+            if (addTodoBtn) {
+                addTodoBtn.addEventListener('click', showAddTodoDialog);
+            }
+            
+            // 刷新待办事项按钮点击事件
+            const refreshTodosBtn = document.getElementById('refreshTodosBtn');
+            if (refreshTodosBtn) {
+                refreshTodosBtn.addEventListener('click', loadTodosList);
+            }
+            
+            // 状态筛选器变化事件
+            const todoStatusFilter = document.getElementById('todoStatusFilter');
+            if (todoStatusFilter) {
+                todoStatusFilter.addEventListener('change', loadTodosList);
+            }
+            
+            // 优先级筛选器变化事件
+            const todoPriorityFilter = document.getElementById('todoPriorityFilter');
+            if (todoPriorityFilter) {
+                todoPriorityFilter.addEventListener('change', loadTodosList);
+            }
+        });
+        
+        function showAddTodoDialog() {
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            
+            const dialogContent = document.createElement('div');
+            dialogContent.style.cssText = `
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 500px;
+                max-width: 90%;
+            `;
+            
+            dialogContent.innerHTML = `
+                <h3 style="margin-bottom: 15px;">新增待办事项</h3>
+                <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">任务名称 *</label>
+                    <input type="text" id="todoTitle" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">任务内容</label>
+                    <textarea id="todoContent" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">截止日期</label>
+                    <input type="date" id="todoDueDate" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">优先级</label>
+                    <select id="todoPriority" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="medium">中</option>
+                        <option value="low">低</option>
+                        <option value="high">高</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">状态</label>
+                    <select id="todoStatus" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="pending">待处理</option>
+                        <option value="in_progress">进行中</option>
+                        <option value="completed">已完成</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">负责人</label>
+                    <select id="todoAssignedTo" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">未分配</option>
+                        <!-- 学生选项将通过JavaScript动态添加 -->
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" id="cancelAddTodo">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmAddTodo">确认</button>
+                </div>
+            `;
+            
+            dialog.appendChild(dialogContent);
+            document.body.appendChild(dialog);
+            
+            // 加载学生列表到负责人选择框
+            loadStudentsForTodoAssignment();
+            
+            // 取消按钮点击事件
+            const cancelBtn = dialogContent.querySelector('#cancelAddTodo');
+            cancelBtn.addEventListener('click', function() {
+                document.body.removeChild(dialog);
+            });
+            
+            // 确认按钮点击事件
+            const confirmBtn = dialogContent.querySelector('#confirmAddTodo');
+            confirmBtn.addEventListener('click', function() {
+                const title = document.getElementById('todoTitle').value.trim();
+                const content = document.getElementById('todoContent').value.trim();
+                const dueDate = document.getElementById('todoDueDate').value;
+                const priority = document.getElementById('todoPriority').value;
+                const status = document.getElementById('todoStatus').value;
+                const assignedTo = document.getElementById('todoAssignedTo').value;
+                
+                if (!title) {
+                    alert('任务名称不能为空');
+                    return;
+                }
+                
+                const todoData = {
+                    title: title,
+                    content: content,
+                    priority: priority,
+                    status: status
+                };
+                
+                if (dueDate) {
+                    todoData.due_date = dueDate;
+                }
+                
+                if (assignedTo) {
+                    todoData.assigned_to = parseInt(assignedTo);
+                }
+                
+                fetch('/todos/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(todoData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.detail || '创建待办事项失败');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('待办事项创建成功:', data);
+                    document.body.removeChild(dialog);
+                    loadTodosList();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('创建待办事项失败: ' + error.message);
+                });
+            });
+        }
+        
+        function loadStudentsForTodoAssignment() {
+            const assignedToSelect = document.getElementById('todoAssignedTo');
+            if (!assignedToSelect) return;
+            
+            fetch('/students/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(students => {
+                students.forEach(student => {
+                    if (student.username !== 'admin') {
+                        const option = document.createElement('option');
+                        option.value = student.id;
+                        option.textContent = student.name;
+                        assignedToSelect.appendChild(option);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading students:', error);
+            });
+        }
+        
+        function loadTodosList() {
+            const todosTableBody = document.getElementById('todosTableBody');
+            if (!todosTableBody) return;
+            
+            const statusFilter = document.getElementById('todoStatusFilter').value;
+            const priorityFilter = document.getElementById('todoPriorityFilter').value;
+            
+            let url = '/todos/?';
+            if (statusFilter) {
+                url += `status=${statusFilter}&`;
+            }
+            if (priorityFilter) {
+                url += `priority=${priorityFilter}&`;
+            }
+            
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('获取待办事项失败');
+                }
+                return response.json();
+            })
+            .then(todos => {
+                todosTableBody.innerHTML = '';
+                
+                if (todos.length === 0) {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = `<td colspan="7" style="text-align: center;">暂无待办事项</td>`;
+                    todosTableBody.appendChild(emptyRow);
+                    return;
+                }
+                
+                todos.forEach(todo => {
+                    const row = document.createElement('tr');
+                    
+                    // 优先级样式
+                    let priorityStyle = '';
+                    if (todo.priority === 'high') {
+                        priorityStyle = 'color: red;';
+                    } else if (todo.priority === 'medium') {
+                        priorityStyle = 'color: orange;';
+                    } else {
+                        priorityStyle = 'color: green;';
+                    }
+                    
+                    // 状态样式
+                    let statusText = '';
+                    let statusStyle = '';
+                    switch (todo.status) {
+                        case 'pending':
+                            statusText = '待处理';
+                            statusStyle = 'color: orange;';
+                            break;
+                        case 'in_progress':
+                            statusText = '进行中';
+                            statusStyle = 'color: blue;';
+                            break;
+                        case 'completed':
+                            statusText = '已完成';
+                            statusStyle = 'color: green;';
+                            break;
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${todo.title}</td>
+                        <td>${todo.content || '无'}</td>
+                        <td>${todo.due_date || '无'}</td>
+                        <td style="${priorityStyle}">${todo.priority === 'low' ? '低' : (todo.priority === 'medium' ? '中' : '高')}</td>
+                        <td style="${statusStyle}">${statusText}</td>
+                        <td>${todo.assignee_name || '未分配'}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editTodo(${todo.id})" title="编辑"><i class="fas fa-edit"></i></button>
+                            ${todo.status !== 'completed' ? `<button class="btn btn-secondary" onclick="completeTodo(${todo.id})" title="标记完成"><i class="fas fa-check"></i></button>` : ''}
+                            <button class="btn btn-secondary" onclick="deleteTodo(${todo.id})" title="删除" style="color: red;"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    
+                    todosTableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('获取待办事项失败: ' + error.message);
+            });
+        }
+        
+        function editTodo(todoId) {
+            fetch(`/todos/${todoId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(todo => {
+                const dialog = document.createElement('div');
+                dialog.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000;
+                `;
+                
+                const dialogContent = document.createElement('div');
+                dialogContent.style.cssText = `
+                    background-color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    width: 500px;
+                    max-width: 90%;
+                `;
+                
+                dialogContent.innerHTML = `
+                    <h3 style="margin-bottom: 15px;">编辑待办事项</h3>
+                    <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">任务名称 *</label>
+                        <input type="text" id="editTodoTitle" value="${todo.title}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">任务内容</label>
+                        <textarea id="editTodoContent" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">${todo.content || ''}</textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">截止日期</label>
+                        <input type="date" id="editTodoDueDate" value="${todo.due_date || ''}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">优先级</label>
+                        <select id="editTodoPriority" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="low" ${todo.priority === 'low' ? 'selected' : ''}>低</option>
+                            <option value="medium" ${todo.priority === 'medium' ? 'selected' : ''}>中</option>
+                            <option value="high" ${todo.priority === 'high' ? 'selected' : ''}>高</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">状态</label>
+                        <select id="editTodoStatus" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="pending" ${todo.status === 'pending' ? 'selected' : ''}>待处理</option>
+                            <option value="in_progress" ${todo.status === 'in_progress' ? 'selected' : ''}>进行中</option>
+                            <option value="completed" ${todo.status === 'completed' ? 'selected' : ''}>已完成</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">负责人</label>
+                        <select id="editTodoAssignedTo" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">未分配</option>
+                            <!-- 学生选项将通过JavaScript动态添加 -->
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" id="cancelEditTodo">取消</button>
+                        <button type="button" class="btn btn-primary" id="confirmEditTodo">确认</button>
+                    </div>
+                `;
+                
+                dialog.appendChild(dialogContent);
+                document.body.appendChild(dialog);
+                
+                // 加载学生列表到负责人选择框
+                loadStudentsForTodoAssignment('editTodoAssignedTo', todo.assigned_to);
+                
+                // 取消按钮点击事件
+                const cancelBtn = dialogContent.querySelector('#cancelEditTodo');
+                cancelBtn.addEventListener('click', function() {
+                    document.body.removeChild(dialog);
+                });
+                
+                // 确认按钮点击事件
+                const confirmBtn = dialogContent.querySelector('#confirmEditTodo');
+                confirmBtn.addEventListener('click', function() {
+                    const title = document.getElementById('editTodoTitle').value.trim();
+                    const content = document.getElementById('editTodoContent').value.trim();
+                    const dueDate = document.getElementById('editTodoDueDate').value;
+                    const priority = document.getElementById('editTodoPriority').value;
+                    const status = document.getElementById('editTodoStatus').value;
+                    const assignedTo = document.getElementById('editTodoAssignedTo').value;
+                    
+                    if (!title) {
+                        alert('任务名称不能为空');
+                        return;
+                    }
+                    
+                    const todoData = {
+                        title: title,
+                        content: content,
+                        priority: priority,
+                        status: status
+                    };
+                    
+                    if (dueDate) {
+                        todoData.due_date = dueDate;
+                    }
+                    
+                    if (assignedTo) {
+                        todoData.assigned_to = parseInt(assignedTo);
+                    }
+                    
+                    fetch(`/todos/${todoId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(todoData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                throw new Error(err.detail || '更新待办事项失败');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('待办事项更新成功:', data);
+                        document.body.removeChild(dialog);
+                        loadTodosList();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('更新待办事项失败: ' + error.message);
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('获取待办事项失败: ' + error.message);
+            });
+        }
+        
+        function completeTodo(todoId) {
+            if (confirm('确定要标记此任务为已完成吗？')) {
+                fetch(`/todos/${todoId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.detail || '标记完成失败');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('标记完成成功:', data);
+                    loadTodosList();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('标记完成失败: ' + error.message);
+                });
+            }
+        }
+        
+        function deleteTodo(todoId) {
+            if (confirm('确定要删除此待办事项吗？')) {
+                fetch(`/todos/${todoId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.detail || '删除失败');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('删除成功:', data);
+                    loadTodosList();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('删除失败: ' + error.message);
+                });
+            }
+        }
+        
+        function loadStudentsForTodoAssignment(selectId = 'todoAssignedTo', selectedId = null) {
+            const assignedToSelect = document.getElementById(selectId);
+            if (!assignedToSelect) return;
+            
+            fetch('/students/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(students => {
+                // 清空现有选项（保留第一个"未分配"选项）
+                while (assignedToSelect.options.length > 1) {
+                    assignedToSelect.remove(1);
+                }
+                
+                students.forEach(student => {
+                    if (student.username !== 'admin') {
+                        const option = document.createElement('option');
+                        option.value = student.id;
+                        option.textContent = student.name;
+                        if (selectedId && student.id === selectedId) {
+                            option.selected = true;
+                        }
+                        assignedToSelect.appendChild(option);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading students:', error);
+            });
+        }
+        
+        // 工作交接相关功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 新增工作记录按钮点击事件
+            const addWorkRecordBtn = document.getElementById('addWorkRecordBtn');
+            if (addWorkRecordBtn) {
+                addWorkRecordBtn.addEventListener('click', showAddWorkRecordDialog);
+            }
+        });
+        
+        function loadWorkRecords() {
+            const workRecordsTableBody = document.getElementById('workRecordsTableBody');
+            if (!workRecordsTableBody) return;
+            
+            fetch('/work-records/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('获取工作记录失败');
+                }
+                return response.json();
+            })
+            .then(records => {
+                workRecordsTableBody.innerHTML = '';
+                
+                if (records.length === 0) {
+                        const emptyRow = document.createElement('tr');
+                        emptyRow.innerHTML = `<td colspan="6" style="text-align: center;">暂无工作记录</td>`;
+                        workRecordsTableBody.appendChild(emptyRow);
+                        return;
+                    }
+                    
+                    records.forEach(record => {
+                        const row = document.createElement('tr');
+                        
+                        // 状态样式
+                        let statusText = '';
+                        let statusStyle = '';
+                        switch (record.status) {
+                            case 'pending':
+                                statusText = '待处理';
+                                statusStyle = 'color: orange;';
+                                break;
+                            case 'completed':
+                                statusText = '已完成';
+                                statusStyle = 'color: green;';
+                                break;
+                        }
+                        
+                        row.innerHTML = `
+                            <td style="width: 16%;">${record.date}</td>
+                            <td style="width: 16%;">${record.time_slot || '-'}</td>
+                            <td style="width: 16%;">${record.student_name}</td>
+                            <td style="width: 16%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${record.content.length > 20 ? record.content.substring(0, 20) + '...' : record.content}</td>
+                            <td style="width: 16%; ${statusStyle}">${statusText}</td>
+                            <td style="width: 20%;">
+                                <button class="btn btn-secondary" onclick="viewWorkRecordDetail(${record.id})" title="详情"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-secondary" onclick="editWorkRecord(${record.id})" title="编辑"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-secondary" onclick="completeWorkRecord(${record.id})" title="完成" ${record.status === 'completed' ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}><i class="fas fa-check"></i></button>
+                                <button class="btn btn-secondary" onclick="deleteWorkRecord(${record.id})" title="删除" style="color: red;"><i class="fas fa-trash"></i></button>
+                            </td>
+                        `;
+                        
+                        workRecordsTableBody.appendChild(row);
+                    });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                workRecordsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">加载失败</td></tr>';
+            });
+        }
+        
+        function showAddWorkRecordDialog() {
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            
+            const dialogContent = document.createElement('div');
+            dialogContent.style.cssText = `
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 500px;
+                max-width: 90%;
+            `;
+            
+            dialogContent.innerHTML = `
+                <h3 style="margin-bottom: 15px;">新增工作记录</h3>
+                <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">日期 *</label>
+                    <input type="date" id="workRecordDate" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">时段</label>
+                    <select id="workRecordTimeSlot" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">请选择时段</option>
+                        <!-- 时段选项将通过JavaScript动态添加 -->
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">学生 *</label>
+                    <select id="workRecordStudentId" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">请选择学生</option>
+                        <!-- 学生选项将通过JavaScript动态添加 -->
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">交接内容 *</label>
+                    <textarea id="workRecordContent" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                    <label style="display: block; margin-bottom: 5px;">交接备注</label>
+                    <textarea id="workRecordHandoverNotes" rows="2" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" id="cancelAddWorkRecord">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmAddWorkRecord">确认</button>
+                </div>
+            `;
+            
+            dialog.appendChild(dialogContent);
+            document.body.appendChild(dialog);
+            
+            // 加载学生列表
+            loadStudentsForWorkRecord();
+            
+            // 加载时段选项
+            loadTimeSlotsForWorkRecord();
+            
+            // 初始化交接内容为"1. "
+            const contentTextarea = document.getElementById('workRecordContent');
+            if (!contentTextarea.value) {
+                contentTextarea.value = '1. ';
+            }
+            
+            // 交接内容自动序号功能
+            contentTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const cursorPosition = this.selectionStart;
+                    const textBeforeCursor = this.value.substring(0, cursorPosition);
+                    const textAfterCursor = this.value.substring(cursorPosition);
+                    
+                    // 查找当前行的序号
+                    const lines = textBeforeCursor.split('\n');
+                    const currentLine = lines[lines.length - 1];
+                    const numberMatch = currentLine.match(/^(\d+)\.\s*/);
+                    
+                    let nextNumber = 1;
+                    if (numberMatch) {
+                        nextNumber = parseInt(numberMatch[1]) + 1;
+                    }
+                    
+                    // 插入新序号
+                    const newText = textBeforeCursor + '\n' + nextNumber + '. ' + textAfterCursor;
+                    this.value = newText;
+                    
+                    // 设置光标位置
+                    const newCursorPosition = cursorPosition + 1 + String(nextNumber).length + 2;
+                    this.setSelectionRange(newCursorPosition, newCursorPosition);
+                }
+            });
+            
+            // 取消按钮点击事件
+            const cancelBtn = dialogContent.querySelector('#cancelAddWorkRecord');
+            cancelBtn.addEventListener('click', function() {
+                document.body.removeChild(dialog);
+            });
+            
+            // 确认按钮点击事件
+            const confirmBtn = dialogContent.querySelector('#confirmAddWorkRecord');
+            confirmBtn.addEventListener('click', function() {
+                const date = document.getElementById('workRecordDate').value;
+                const timeSlot = document.getElementById('workRecordTimeSlot').value;
+                const studentId = document.getElementById('workRecordStudentId').value;
+                const content = document.getElementById('workRecordContent').value.trim();
+                const handoverNotes = document.getElementById('workRecordHandoverNotes').value.trim();
+                
+                if (!date || !studentId || !content) {
+                    alert('日期、学生和交接内容不能为空');
+                    return;
+                }
+                
+                const recordData = {
+                    date: date,
+                    student_id: parseInt(studentId),
+                    content: content
+                };
+                
+                if (timeSlot) {
+                    recordData.time_slot = timeSlot;
+                }
+                
+                if (handoverNotes) {
+                    recordData.handover_notes = handoverNotes;
+                }
+                
+                fetch('/work-records/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(recordData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.detail || '创建工作记录失败');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('工作记录创建成功:', data);
+                    document.body.removeChild(dialog);
+                    loadWorkRecords();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('创建工作记录失败: ' + error.message);
+                });
+            });
+        }
+        
+        function loadStudentsForWorkRecord() {
+            const studentSelect = document.getElementById('workRecordStudentId');
+            if (!studentSelect) return;
+            
+            fetch('/students/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(students => {
+                // 清空现有选项（保留第一个提示选项）
+                while (studentSelect.options.length > 1) {
+                    studentSelect.remove(1);
+                }
+                
+                students.forEach(student => {
+                    if (student.username !== 'admin') {
+                        const option = document.createElement('option');
+                        option.value = student.id;
+                        option.textContent = student.name;
+                        studentSelect.appendChild(option);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading students:', error);
+            });
+        }
+        
+        function loadTimeSlotsForWorkRecord(selectId = 'workRecordTimeSlot', selectedValue = null) {
+            const timeSlotSelect = document.getElementById(selectId);
+            if (!timeSlotSelect) return;
+            
+            // 清空现有选项（保留第一个提示选项）
+            while (timeSlotSelect.options.length > 1) {
+                timeSlotSelect.remove(1);
+            }
+            
+            // 获取值班管理的时段
+            const timeSlots = window.timeSlots || ['08:10-09:35', '09:50-11:15', '14:30-15:55', '16:10-17:35'];
+            
+            timeSlots.forEach(timeSlot => {
+                const option = document.createElement('option');
+                option.value = timeSlot;
+                option.textContent = timeSlot;
+                if (selectedValue && timeSlot === selectedValue) {
+                    option.selected = true;
+                }
+                timeSlotSelect.appendChild(option);
+            });
+        }
+        
+        function viewWorkRecordDetail(recordId) {
+            fetch(`/work-records/${recordId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(record => {
+                const previewDiv = document.getElementById('workRecordPreview');
+                
+                // 状态样式
+                let statusText = '';
+                let statusStyle = '';
+                switch (record.status) {
+                    case 'pending':
+                        statusText = '待处理';
+                        statusStyle = 'color: orange;';
+                        break;
+                    case 'completed':
+                        statusText = '已完成';
+                        statusStyle = 'color: green;';
+                        break;
+                }
+                
+                // 处理交接内容，使其分点显示
+                let contentHtml = '';
+                if (record.content) {
+                    const lines = record.content.split('\n');
+                    contentHtml = '<ul style="margin: 0; padding-left: 20px;">';
+                    lines.forEach(line => {
+                        if (line.trim()) {
+                            contentHtml += `<li>${line}</li>`;
+                        }
+                    });
+                    contentHtml += '</ul>';
+                } else {
+                    contentHtml = '-';
+                }
+                
+                previewDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <strong>日期：</strong>${record.date}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>时段：</strong>${record.time_slot || '-'}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>交接人：</strong>${record.student_name}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>交接内容：</strong>
+                        <div style="margin-top: 5px; padding: 10px; background-color: #f5f5f5; border-radius: 4px;">${contentHtml}</div>
+                    </div>
+                    ${record.handover_notes ? `
+                    <div style="margin-bottom: 15px;">
+                        <strong>交接备注：</strong>
+                        <div style="margin-top: 5px; padding: 10px; background-color: #f5f5f5; border-radius: 4px;">${record.handover_notes}</div>
+                    </div>
+                    ` : ''}
+                    <div style="margin-bottom: 15px;">
+                        <strong>状态：</strong><span style="${statusStyle}">${statusText}</span>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('获取工作记录详情失败: ' + error.message);
+            });
+        }
+        
+        function editWorkRecord(recordId) {
+            fetch(`/work-records/${recordId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(record => {
+                const dialog = document.createElement('div');
+                dialog.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000;
+                `;
+                
+                const dialogContent = document.createElement('div');
+                dialogContent.style.cssText = `
+                    background-color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    width: 500px;
+                    max-width: 90%;
+                `;
+                
+                dialogContent.innerHTML = `
+                    <h3 style="margin-bottom: 15px;">编辑工作记录</h3>
+                    <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">日期 *</label>
+                        <input type="date" id="editWorkRecordDate" value="${record.date}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">时段</label>
+                        <select id="editWorkRecordTimeSlot" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">请选择时段</option>
+                            <!-- 时段选项将通过JavaScript动态添加 -->
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">交接内容 *</label>
+                        <textarea id="editWorkRecordContent" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">${record.content}</textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px;">交接备注</label>
+                        <textarea id="editWorkRecordHandoverNotes" rows="2" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">${record.handover_notes || ''}</textarea>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" id="cancelEditWorkRecord">取消</button>
+                        <button type="button" class="btn btn-primary" id="confirmEditWorkRecord">确认</button>
+                    </div>
+                `;
+                
+                dialog.appendChild(dialogContent);
+                document.body.appendChild(dialog);
+                
+                // 加载时段选项
+                loadTimeSlotsForWorkRecord('editWorkRecordTimeSlot', record.time_slot);
+                
+                // 交接内容自动序号功能
+                const editContentTextarea = document.getElementById('editWorkRecordContent');
+                editContentTextarea.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        const cursorPosition = this.selectionStart;
+                        const textBeforeCursor = this.value.substring(0, cursorPosition);
+                        const textAfterCursor = this.value.substring(cursorPosition);
+                        
+                        // 查找当前行的序号
+                        const lines = textBeforeCursor.split('\n');
+                        const currentLine = lines[lines.length - 1];
+                        const numberMatch = currentLine.match(/^(\d+)\.\s*/);
+                        
+                        let nextNumber = 1;
+                        if (numberMatch) {
+                            nextNumber = parseInt(numberMatch[1]) + 1;
+                        }
+                        
+                        // 插入新序号
+                        const newText = textBeforeCursor + '\n' + nextNumber + '. ' + textAfterCursor;
+                        this.value = newText;
+                        
+                        // 设置光标位置
+                        const newCursorPosition = cursorPosition + 1 + String(nextNumber).length + 2;
+                        this.setSelectionRange(newCursorPosition, newCursorPosition);
+                    }
+                });
+                
+                // 取消按钮点击事件
+                const cancelBtn = dialogContent.querySelector('#cancelEditWorkRecord');
+                cancelBtn.addEventListener('click', function() {
+                    document.body.removeChild(dialog);
+                });
+                
+                // 确认按钮点击事件
+                const confirmBtn = dialogContent.querySelector('#confirmEditWorkRecord');
+                confirmBtn.addEventListener('click', function() {
+                    const date = document.getElementById('editWorkRecordDate').value;
+                    const timeSlot = document.getElementById('editWorkRecordTimeSlot').value;
+                    const content = document.getElementById('editWorkRecordContent').value.trim();
+                    const handoverNotes = document.getElementById('editWorkRecordHandoverNotes').value.trim();
+                    
+                    if (!date || !content) {
+                        alert('日期和交接内容不能为空');
+                        return;
+                    }
+                    
+                    const recordData = {
+                        content: content
+                    };
+                    
+                    if (timeSlot) {
+                        recordData.time_slot = timeSlot;
+                    }
+                    
+                    if (handoverNotes) {
+                        recordData.handover_notes = handoverNotes;
+                    }
+                    
+                    fetch(`/work-records/${recordId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(recordData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                throw new Error(err.detail || '更新工作记录失败');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('工作记录更新成功:', data);
+                        document.body.removeChild(dialog);
+                        loadWorkRecords();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('更新工作记录失败: ' + error.message);
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('获取工作记录失败: ' + error.message);
+            });
+        }
+        
+
+        
+        function completeWorkRecord(recordId) {
+            fetch(`/work-records/${recordId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: 'completed' })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.detail || '更新失败');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('工作记录已完成:', data);
+                loadWorkRecords();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('操作失败: ' + error.message);
+            });
+        }
+        
+        function deleteWorkRecord(recordId) {
+            if (confirm('确定要删除此工作记录吗？')) {
+                fetch(`/work-records/${recordId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.detail || '删除失败');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('删除成功:', data);
+                    loadWorkRecords();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('删除失败: ' + error.message);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
